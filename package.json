@@ -1,0 +1,45 @@
+{
+  "name": "loghub-core",
+  "description": "Collect logs from HTTP request and pipe them to Kafka.",
+  "authors": [],
+  "version": "0.0.1",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:teambition/loghub-core.git"
+  },
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "homepage": "https://github.com/teambition/loghub-core",
+  "keywords": [
+    "message",
+    "distributed",
+    "logs",
+    "kafka",
+    "teambition"
+  ],
+  "dependencies": {
+    "config": "~1.16.0",
+    "kafka-node": "^0.2.29",
+    "toa": "~1.0.1",
+    "toa-pm": "~0.2.0",
+    "toa-router": "~1.1.2",
+    "toa-token": "~1.2.0"
+  },
+  "devDependencies": {
+    "mocha": "^2.3.3",
+    "standard": "^5.3.1",
+    "supertest": "^1.1.0"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "test": "standard & mocha -r thunk-mocha"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "test",
+    "examples"
+  ]
+}
