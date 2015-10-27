@@ -34,7 +34,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "standard & mocha -r thunk-mocha"
+    "test": "standard & mocha"
   },
   "ignore": [
     "**/.*",

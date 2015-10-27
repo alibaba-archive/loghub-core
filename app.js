@@ -18,11 +18,11 @@ const router = new Router()
   })
   .get('/log/(*)', logAPI.get)
 
-const app = module.exports = Toa(function *() {
+const app = Toa(function *() {
   var path = this.path
 
-  if (path != '/favicon.ico') {
-    if (this.path !== '/') console.log(this.token)
+  if (path !== '/favicon.ico') {
+    // if (this.path !== '/') console.log(this.token)
     yield router.route(this)
   }
 })
@@ -38,6 +38,8 @@ toaToken(app, config.tokenSecret, {
 /**
  * Start up service.
  */
-module.exports = app.listen(config.port)
+app.listen(config.port)
 // The server is finally closed and exit gracefully when all connections are ended.
 pm(app)
+
+module.exports = app
