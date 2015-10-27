@@ -19,8 +19,12 @@ const router = new Router()
   .get('/log/(*)', logAPI.get)
 
 const app = module.exports = Toa(function *() {
-  if (this.path !== '/') console.log(this.token)
-  yield router.route(this)
+  var path = this.path
+
+  if (path != '/favicon.ico') {
+    if (this.path !== '/') console.log(this.token)
+    yield router.route(this)
+  }
 })
 
 toaToken(app, config.tokenSecret, {
