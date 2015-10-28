@@ -7,14 +7,16 @@ const KeyedMessage = kafka.KeyedMessage
 const logAPI = module.exports = {}
 
 logAPI.get = function *() {
+  // Authenticate session cookie or authorization token.
   var token
-
-  // TODO: Add support for session cookie authentication.
-
-  token = this.token
+  if (this.request.header.cookie) {
+    token = JSON.parse(new Buffer(this.request.header.cookie, 'base64').toString('utf8')).user
+  } else {
+    token = this.token
+  }
 
   // Check necessary if fields are provided.
-  if (!token._id) this.throw('User id is required.', 400)
+  if (!token._id) this.throw('User id is required.', 401)
   var log = this.query.log
   if (!log) this.throw('Log has no content.', 400)
 
@@ -28,7 +30,9 @@ logAPI.get = function *() {
   }
 
   // Commit logs to kafka.
-  yield this.kafkaClient.send([payload])
+  yield this.kafkaClient.send([payload], function (err, data) {
+    if (err) throw err
+  })
 
   this.body = {
     token: token,
