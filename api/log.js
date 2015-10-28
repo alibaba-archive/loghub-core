@@ -16,7 +16,7 @@ logAPI.get = function *() {
   }
 
   // Check necessary if fields are provided.
-  if (!token._id) this.throw('User id is required.', 401)
+  if (!token._id) this.throw('Either token or cookie is invalid.', 401)
   var log = this.query.log
   if (!log) this.throw('Log has no content.', 400)
 
