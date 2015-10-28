@@ -34,7 +34,6 @@ describe('Test token authorization', function () {
       .expect(400)
   })
 
-  // TODO: Add tests for session cookie authorization.
   it('Commit logs successfully with token', function *() {
     var token = app.signToken(user)
 
