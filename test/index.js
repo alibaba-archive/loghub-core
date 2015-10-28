@@ -1,11 +1,14 @@
 'use strict'
 /*global describe, it*/
 
+const config = require('config')
 const assert = require('assert')
 const supertest = require('supertest')
 const app = require('../app')
 const request = supertest(app.server)
-
+const kafka = require('kafka-node')
+const Consumer = kafka.Consumer
+const client = new kafka.Client()
 const user = {_id: 123}
 const logContent = 'testlog: ' + new Date().toString()
 
@@ -34,8 +37,15 @@ describe('Test token authorization', function () {
 
   // TODO: Add tests for session cookie authorization.
 
-  it('Get token from headers', function (done) {
+  it('Send message successfully', function (done) {
     var token = app.signToken(user)
+    var consumer = new Consumer(client, [{topic: config.kafkaTopic}], {autoCommit: false})
+    consumer.once('message', function (message) {
+      consumer.close(function (err) {
+        done(err)
+      })
+    })
+
     request.get(`/log/query?log=${logContent}`)
       .set('Authorization', 'Bearer ' + token)
       .expect(200)
@@ -43,6 +53,5 @@ describe('Test token authorization', function () {
         assert.strictEqual(res.body.token._id, user._id)
         assert.strictEqual(res.body.log, logContent)
       })
-      .end(done)
   })
 })
