@@ -41,7 +41,7 @@ describe('Test token authorization', function () {
     var token = app.signToken(user)
     var consumer = new Consumer(client, [{topic: config.kafkaTopic}], {autoCommit: false})
     consumer.once('message', function (message) {
-      done(err)
+      done()
     })
 
     request.get(`/log/query?log=${logContent}`)
