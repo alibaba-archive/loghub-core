@@ -9,6 +9,8 @@ const Router = require('toa-router')
 const packageInfo = require('./package.json')
 const logAPI = require('./api/log')
 
+const kafkaClient = require('./service/kafka').client
+
 const router = new Router()
   .get('', function () {
     this.body = {
@@ -19,10 +21,9 @@ const router = new Router()
   .get('/log/(*)', logAPI.get)
 
 const app = Toa(function *() {
-  var path = this.path
-
-  if (path !== '/favicon.ico') {
-    // if (this.path !== '/') console.log(this.token)
+  // Handle requests for committing logs.
+  if (this.path !== '/favicon.ico') {
+    this.kafkaClient = kafkaClient
     yield router.route(this)
   }
 })

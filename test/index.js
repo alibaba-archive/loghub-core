@@ -7,7 +7,7 @@ const app = require('../app')
 const request = supertest(app.server)
 
 const user = {_id: 123}
-const logContent = 'testlog'
+const logContent = 'testlog: ' + new Date().toString()
 
 describe('Test token authorization', function () {
   it('Without autheorization', function (done) {
@@ -33,7 +33,7 @@ describe('Test token authorization', function () {
   })
 
   // TODO: Add tests for session cookie authorization.
-  
+
   it('Get token from headers', function (done) {
     var token = app.signToken(user)
     request.get(`/log/query?log=${logContent}`)
