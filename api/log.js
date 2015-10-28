@@ -13,16 +13,15 @@ logAPI.get = function *() {
 
   // Check necessary if fields are provided.
   if (!token._id) this.throw('User id is required.', 400)
-  var log = this.query.log
   if (!log) this.throw('Log has no content.', 400)
 
-  var payload = [{
+  var payload = {
     topic: config.kafkaTopic,
     messages: log
-  }]
+  }
 
   // Commit logs to kafka.
-  yield this.kafkaClient.send(payload)
+  yield this.kafkaClient.send([payload])
 
   this.body = {
     token: token,
