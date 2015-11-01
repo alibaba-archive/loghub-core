@@ -23,6 +23,9 @@
     "config": "~1.16.0",
     "kafka-node": "^0.2.29",
     "toa": "~1.0.1",
+    "toa-body": "^1.2.2",
+    "toa-cookie-session": "^0.1.0",
+    "toa-favicon": "^1.1.0",
     "toa-pm": "~0.2.0",
     "toa-router": "~1.1.2",
     "toa-token": "~1.2.0"

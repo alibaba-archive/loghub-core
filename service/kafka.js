@@ -1,9 +1,9 @@
 'use strict'
 
-const host = process.env['KAFKA_HOST'] || ''
+const config = require('config')
 const kafka = require('kafka-node')
 const Producer = kafka.Producer
-const producerClient = new kafka.Client(host)
+const producerClient = new kafka.Client(config.host)
 const client = new Producer(producerClient)
 
 client.on('ready', function () {

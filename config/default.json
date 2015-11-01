@@ -1,6 +1,12 @@
 {
-  "port": 7701,
+  "port": 3500,
+  "sessionName": "TEAMBITION_SESSIONID",
+  "sessionSecret": ["sessionSecretXXX"],
   "tokenSecret": ["tokenSecretXXX"],
   "tokenExpires": 172800,
-  "kafkaTopic": "test"
+  "kafka": {
+    "host": "",
+    "topic": "test",
+    "partition": 0
+  }
 }

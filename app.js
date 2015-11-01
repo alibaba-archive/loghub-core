@@ -1,32 +1,26 @@
 'use strict'
 
-const config = require('config')
 const Toa = require('toa')
 const pm = require('toa-pm')
+const config = require('config')
+const toaBody = require('toa-body')
 const toaToken = require('toa-token')
-const Router = require('toa-router')
-
-const packageInfo = require('./package.json')
-const logAPI = require('./api/log')
-
-const kafkaClient = require('./service/kafka').client
-
-const router = new Router()
-  .get('', function () {
-    this.body = {
-      server: packageInfo.name,
-      version: packageInfo.version
-    }
-  })
-  .get('/log/(*)', logAPI.get)
+const favicon = require('toa-favicon')
+const cookieSession = require('toa-cookie-session')
+const router = require('./service/router')
 
 const app = Toa(function *() {
+  this.set('Access-Control-Allow-Origin', this.get('origin') || '*')
+  this.set('Access-Control-Allow-Methods', 'GET, POST, DELETE, HEAD, OPTIONS')
+  this.set('Access-Control-Allow-Headers', 'Authorization, Content-Length, Content-MD5, Content-Type, X-Requested-With')
+  // TODO https://github.com/jshttp/proxy-addr
+  this.state.ip = this.ip
+  this.state.ua = this.get('user-agent')
   // Handle requests for committing logs.
-  if (this.path !== '/favicon.ico') {
-    this.kafkaClient = kafkaClient
-    yield router.route(this)
-  }
+  yield router.route(this)
 })
+
+app.keys = config.sessionSecret
 
 toaToken(app, config.tokenSecret, {
   expiresInSeconds: config.expires,
@@ -36,6 +30,14 @@ toaToken(app, config.tokenSecret, {
     return this.query.token
   }
 })
+
+toaBody(app, {
+  formLimit: '56kb',
+  jsonLimit: '56kb'
+})
+
+app.use(favicon('favicon.ico'))
+app.use(cookieSession({name: config.sessionName}))
 /**
  * Start up service.
  */
