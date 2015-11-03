@@ -4,8 +4,9 @@
   "sessionSecret": ["sessionSecretXXX"],
   "tokenSecret": ["tokenSecretXXX"],
   "tokenExpires": 172800,
+  "logLevel": 6,
   "kafka": {
-    "host": "",
+    "host": "localhost:2181",
     "topic": "test",
     "partition": 0
   }

@@ -2,27 +2,28 @@
 
 const fs = require('fs')
 const path = require('path')
-const config = require('config')
-const kafkaClient = require('./service/kafka').client
-const gifLog = fs.readFileSync(path.join(process.cwd(), 'log.gif'))
+const ilog = require('../service/log')
+const saveLogs = require('../service/kafka').saveLogs
+const logGif = fs.readFileSync(path.join(process.cwd(), 'log.gif'))
+
+const logLevels = Object.create(null)
+ilog.levels.map(function (level) {
+  logLevels[level] = logLevels[level.toLowerCase()] = true
+})
 
 exports.get = function () {
   // Authenticate session cookie or authorization token.
   var userId = authenticateUser(this)
 
-  // Check necessary if fields are provided.
-  if (!userId || !/^[a-f0-9]{24}$/.test(userId)) {
-    this.throw(401, 'Either token or cookie is invalid.')
-  }
-
   let log = checkLog(this, this.query.log)
-  sendLog(log, userId, this.state.ip, this.state.ua)
+  saveLogs(genMessage(this, log, userId))
 
-  if (this.path !== '/log.gif') this.status = 204
-  else {
-    this.set('Cache-Control', 'private')
+  if (this.path !== '/log.gif') {
+    this.body = {success: true}
+  } else {
+    this.set('Cache-Control', 'private, max-age=0, no-cache')
     this.type = 'image/gif'
-    this.body = gifLog
+    this.body = logGif
   }
 }
 
@@ -30,63 +31,46 @@ exports.post = function *() {
   // Authenticate session cookie or authorization token.
   var userId = authenticateUser(this)
 
-  // Check necessary if fields are provided.
-  if (!userId || !/^[a-f0-9]{24}$/.test(userId)) {
-    this.throw(401, 'Either token or cookie is invalid.')
-  }
-
   let log = yield this.parseBody()
   log = checkLog(this, log)
-  sendLog(log, userId, this.state.ip, this.state.ua)
-  this.status = 204
+  saveLogs(genMessage(this, log, userId))
+  this.body = {success: true}
 }
 
 function authenticateUser (ctx) {
-  var token
+  var userId
   try {
-    token = this.token
-    return token.userId
+    userId = ctx.token.userId
   } catch (e) {
-    token = this.session
-    return token._id || (token.user && token.user._id)
+    let session = ctx.session
+    userId = (session.user && session.user._id) || session.uid
   }
+
+  if (!userId || !/^[a-f0-9]{24}$/.test(userId)) {
+    ctx.throw(401, 'Either token or cookie is invalid.')
+  }
+  return userId
 }
 
 function checkLog (ctx, log) {
-  if (!log) ctx.throw(400, 'Log has no content.')
-
-  try {
-    log = JSON.parse(log)
-    if (hasContent(log)) return log
-  } catch (err) {
-    ctx.throw(400, String(err))
+  if (typeof log === 'string') {
+    try {
+      log = JSON.parse(decodeURIComponent(log))
+    } catch (err) {
+      ctx.throw(400, String(err))
+    }
   }
-
-  ctx.throw(400, 'Log has no content.')
+  // log should be object and has a valid type
+  if (log && logLevels[log.type]) return log
+  ctx.throw(400)
 }
 
-function sendLog (log, userId, ip, ua) {
-  // Commit logs to kafka.
-  kafkaClient.send(new Payload(log, userId, ip, ua), function (err, data) {
-    if (err) console.error(err)
-  })
-}
-
-function hasContent (obj) {
-  if (!obj) return false
-  return !!Object.keys(obj).length
-}
-
-function Payload (log, userId, ip, ua, partition) {
-  this.messages = JSON.stringify({
+function genMessage (ctx, log, userId) {
+  let message = JSON.stringify({
     log: log,
     uid: userId,
-    ip: ip,
-    ua: ua
+    ip: ctx.state.ip,
+    ua: ctx.state.ua
   })
-  if (partition >= 0) this.partition = Math.floor(partition)
+  return `[${new Date().toISOString()}] ${log.type.toUpperCase()} ${message}`
 }
-
-Payload.prototype.topic = config.kafkaTopic
-Payload.prototype.partition = config.partition
-Payload.prototype.attributes = 0
