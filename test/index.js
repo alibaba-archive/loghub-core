@@ -1,7 +1,9 @@
 'use strict'
-/* global describe, it, after */
+/* global describe, before, it, after */
 
 // const assert = require('assert')
+const fs = require('fs')
+const path = require('path')
 const thunk = require('thunks')()
 const supertest = require('supertest')
 const app = require('../app')
@@ -10,6 +12,14 @@ const user = {userId: '55c1cf622d81b84d4e1d5338'}
 const logContent = genLog({test: 'message', LOG_TYPE: 'info'})
 
 describe('Test token authorization', function () {
+  var logGifSize
+
+  before(function *() {
+    var stat = thunk.thunkify(fs.stat)
+    var logGifStats = yield stat(path.join(process.cwd(), 'log.gif'))
+    logGifSize = logGifStats['size']
+  })
+
   after(function *() {
     yield thunk.delay(4000)
   })
@@ -89,7 +99,16 @@ describe('Test token authorization', function () {
     var token = app.signToken(user)
     yield request.get(`/log.gif?log=${logContent}&token=${token}`)
       .expect('Content-Type', /gif/)
-      .expect('Content-Length', '43')
+      .expect('Content-Length', logGifSize)
+      .expect(200)
+  })
+
+  it('GET /log.gif, 200', function *() {
+    var token = app.signToken(user)
+    yield request.get(`/log.gif?log=${logContent}`)
+      .set('Authorization', 'Bearer ' + token)
+      .expect('Content-Type', /gif/)
+      .expect('Content-Length', logGifSize)
       .expect(200)
   })
 })
