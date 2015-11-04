@@ -7,7 +7,7 @@ const supertest = require('supertest')
 const app = require('../app')
 const request = supertest(app.server)
 const user = {userId: '55c1cf622d81b84d4e1d5338'}
-const logContent = genLog({test: 'message', type: 'info'})
+const logContent = genLog({test: 'message', LOG_TYPE: 'info'})
 
 describe('Test token authorization', function () {
   after(function *() {
@@ -80,7 +80,7 @@ describe('Test token authorization', function () {
     var token = app.signToken(user)
     yield request.post('/log')
       .set('Authorization', 'Bearer ' + token)
-      .send({test: 'message', type: 'info'})
+      .send({test: 'message', LOG_TYPE: 'info'})
       .expect('Content-Type', /json/)
       .expect(200, {success: true})
   })

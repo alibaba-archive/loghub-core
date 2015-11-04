@@ -38,14 +38,10 @@ exports.post = function *() {
 }
 
 function authenticateUser (ctx) {
-  var userId
-  try {
-    userId = ctx.token.userId
-  } catch (e) {
-    let session = ctx.session
-    userId = (session.user && session.user._id) || session.uid
-  }
+  let session = ctx.session
+  let userId = (session.user && session.user._id) || session.uid
 
+  if (!userId) userId = ctx.token.userId
   if (!userId || !/^[a-f0-9]{24}$/.test(userId)) {
     ctx.throw(401, 'Either token or cookie is invalid.')
   }
@@ -60,8 +56,8 @@ function checkLog (ctx, log) {
       ctx.throw(400, String(err))
     }
   }
-  // log should be object and has a valid type
-  if (log && logLevels[log.type]) return log
+  // log should be object and has a valid type on `LOG_TYPE`
+  if (log && logLevels[log.LOG_TYPE]) return log
   ctx.throw(400)
 }
 
@@ -72,5 +68,5 @@ function genMessage (ctx, log, userId) {
     ip: ctx.state.ip,
     ua: ctx.state.ua
   })
-  return `[${new Date().toISOString()}] ${log.type.toUpperCase()} ${message}`
+  return `[${new Date().toISOString()}] ${log.LOG_TYPE.toUpperCase()} ${message}`
 }

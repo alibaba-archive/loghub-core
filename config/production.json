@@ -1,0 +1,8 @@
+{
+  "sessionSecret": ["sessionSecret"],
+  "kafka": {
+    "host": "kafka01-cn:2181,kafka02-cn:2181",
+    "topic": "test",
+    "partition": 0
+  }
+}

@@ -2,7 +2,7 @@
   "name": "loghub-core",
   "description": "Collect logs from HTTP request and pipe them to Kafka.",
   "authors": [],
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "app.js",
   "repository": {
     "type": "git",
@@ -20,6 +20,7 @@
     "teambition"
   ],
   "dependencies": {
+    "cfork": "^1.3.1",
     "config": "~1.16.0",
     "ilog": "~0.1.1",
     "kafka-node": "~0.2.29",
