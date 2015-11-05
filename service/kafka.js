@@ -3,6 +3,7 @@
 const config = require('config')
 const kafka = require('kafka-node')
 const ilog = require('./log')
+const thunk = require('thunks')()
 
 const client = new kafka.Client(config.kafka.host, 'loghub-core')
 const producer = new kafka.Producer(client)
@@ -26,10 +27,29 @@ exports.saveLogs = function (message) {
     queue.push(message)
     return
   }
+
   // Commit logs to kafka.
   producer.send([new Payload(message)], function (error, res) {
     ilog.auto(error)
   })
+}
+
+exports.saveLogsSync = function (message) {
+  if (!kafkaReady) {
+    queue.push(message)
+    return false
+  }
+
+  var success = true
+  var commitLogs = thunk.thunkify.call(producer, producer.send)
+  commitLogs([new Payload(message)])(function (err, res) {
+    if (err) {
+      ilog.error(err)
+      success = false
+    }
+  })
+
+  return success
 }
 
 function Payload (messages) {

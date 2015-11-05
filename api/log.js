@@ -3,7 +3,7 @@
 const fs = require('fs')
 const path = require('path')
 const ilog = require('../service/log')
-const saveLogs = require('../service/kafka').saveLogs
+const kafkaClient = require('../service/kafka')
 const logGif = fs.readFileSync(path.join(process.cwd(), 'log.gif'))
 
 const logLevels = Object.create(null)
@@ -16,7 +16,7 @@ exports.get = function () {
   var userId = authenticateUser(this)
 
   let log = checkLog(this, this.query.log)
-  saveLogs(genMessage(this, log, userId))
+  kafkaClient.saveLogs(genMessage(this, log, userId))
 
   if (this.path !== '/log.gif') {
     this.body = {success: true}
@@ -33,8 +33,9 @@ exports.post = function *() {
 
   let log = yield this.parseBody()
   log = checkLog(this, log)
-  saveLogs(genMessage(this, log, userId))
-  this.body = {success: true}
+
+  var response = kafkaClient.saveLogsSync(genMessage(this, log, userId))
+  this.body = {success: response}
 }
 
 function authenticateUser (ctx) {
