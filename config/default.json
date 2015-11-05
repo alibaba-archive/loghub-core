@@ -1,5 +1,10 @@
 {
   "port": 3500,
+  "redisPort": 6379,
+  "redisHost": "127.0.0.1",
+  "rateLimitMaxGet": 2500,
+  "rateLimitMaxPost": 2000,
+  "rateLimitDuration": 3600000,
   "sessionName": "TEAMBITION_SESSIONID",
   "sessionSecret": ["sessionSecretXXX"],
   "tokenSecret": ["tokenSecretXXX"],

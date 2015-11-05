@@ -81,6 +81,12 @@ describe('Test token authorization', function () {
       .expect(400)
   })
 
+  it('Request with unrecognized method', function *() {
+    var token = app.signToken(user)
+    yield request.put(`/log?log=${logContent}&token=${token}`)
+      .expect(501)
+  })
+
   it('GET /log, 200', function *() {
     var token = app.signToken(user)
     yield request.get(`/log?log=${logContent}&token=${token}`)
