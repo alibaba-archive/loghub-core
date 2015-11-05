@@ -13,7 +13,7 @@ ilog.levels.map(function (level) {
 
 exports.get = function () {
   // Authenticate session cookie or authorization token.
-  var userId = authenticateUser(this)
+  let userId = authenticateUser(this)
 
   let log = checkLog(this, this.query.log)
   kafkaClient.saveLogs(genMessage(this, log, userId))
@@ -29,13 +29,12 @@ exports.get = function () {
 
 exports.post = function *() {
   // Authenticate session cookie or authorization token.
-  var userId = authenticateUser(this)
-
+  let userId = authenticateUser(this)
   let log = yield this.parseBody()
   log = checkLog(this, log)
 
-  var response = kafkaClient.saveLogsSync(genMessage(this, log, userId))
-  this.body = {success: response}
+  yield kafkaClient.saveLogsAsync(genMessage(this, log, userId))
+  this.body = {success: true}
 }
 
 function authenticateUser (ctx) {

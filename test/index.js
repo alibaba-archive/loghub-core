@@ -7,6 +7,9 @@ const path = require('path')
 const thunk = require('thunks')()
 const supertest = require('supertest')
 const app = require('../app')
+const kafkaClient = require('../service/kafka')
+
+const fsStat = thunk.thunkify(fs.stat)
 const request = supertest(app.server)
 const user = {userId: '55c1cf622d81b84d4e1d5338'}
 const logContent = genLog({test: 'message', LOG_TYPE: 'info'})
@@ -15,9 +18,8 @@ describe('Test token authorization', function () {
   var logGifSize
 
   before(function *() {
-    var stat = thunk.thunkify(fs.stat)
-    var logGifStats = yield stat(path.join(process.cwd(), 'log.gif'))
-    logGifSize = logGifStats['size']
+    var stats = yield fsStat(path.join(process.cwd(), 'log.gif'))
+    logGifSize = stats.size
   })
 
   after(function *() {
@@ -86,8 +88,18 @@ describe('Test token authorization', function () {
       .expect(200, {success: true})
   })
 
+  it('POST /log, 500', function *() {
+    var token = app.signToken(user)
+    yield request.post('/log')
+      .set('Authorization', 'Bearer ' + token)
+      .send({test: 'message', LOG_TYPE: 'info'})
+      .expect(500)
+  })
+
   it('POST /log, 200', function *() {
     var token = app.signToken(user)
+
+    yield kafkaClient.kafkaReady
     yield request.post('/log')
       .set('Authorization', 'Bearer ' + token)
       .send({test: 'message', LOG_TYPE: 'info'})

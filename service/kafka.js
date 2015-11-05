@@ -7,6 +7,7 @@ const thunk = require('thunks')()
 
 const client = new kafka.Client(config.kafka.host, 'loghub-core')
 const producer = new kafka.Producer(client)
+const sendLog = thunk.thunkify.call(producer, producer.send)
 
 const queue = []
 var kafkaReady = false
@@ -14,13 +15,19 @@ var kafkaReady = false
 client.on('ready', function () {
   kafkaReady = true
   if (queue.length) {
-    exports.saveLogs(queue)
+    exports.saveLogs(queue.slice())
     queue.length = 0
   }
+  isReady()
   ilog.info({name: 'kafka', config: config.kafka})
 })
 
-client.on('error', ilog.error)
+// the application should restart if error occured
+client.on('error', function (error) {
+  ilog.emergency(error)
+  isReady(error)
+  throw error
+})
 
 exports.saveLogs = function (message) {
   if (!kafkaReady) {
@@ -30,26 +37,23 @@ exports.saveLogs = function (message) {
 
   // Commit logs to kafka.
   producer.send([new Payload(message)], function (error, res) {
-    ilog.auto(error)
+    if (error != null) ilog.error(error)
   })
 }
 
-exports.saveLogsSync = function (message) {
-  if (!kafkaReady) {
-    queue.push(message)
-    return false
-  }
+exports.saveLogsAsync = function * (message) {
+  yield sendLog([new Payload(message)])
+  return true
+}
 
-  var success = true
-  var commitLogs = thunk.thunkify.call(producer, producer.send)
-  commitLogs([new Payload(message)])(function (err, res) {
-    if (err) {
-      ilog.error(err)
-      success = false
-    }
-  })
+const readyQueue = []
+exports.kafkaReady = function (callback) {
+  if (kafkaReady) callback()
+  else readyQueue.push(callback)
+}
 
-  return success
+function isReady (error) {
+  while (readyQueue.length) readyQueue.shift()(error)
 }
 
 function Payload (messages) {

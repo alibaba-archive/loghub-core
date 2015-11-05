@@ -14,8 +14,8 @@ const packageInfo = require('./package.json')
 
 const app = Toa(function *() {
   this.set('Access-Control-Allow-Origin', this.get('origin') || '*')
-  this.set('Access-Control-Allow-Methods', 'GET, POST, DELETE, HEAD, OPTIONS')
-  this.set('Access-Control-Allow-Headers', 'Authorization, X-Requested-With')
+  this.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+  this.set('Access-Control-Allow-Headers', 'Authorization')
 
   this.state.ip = this.get('x-real-ip') || proxyaddr(this.req, 'uniquelocal')
   this.state.ua = this.get('user-agent')
@@ -23,16 +23,7 @@ const app = Toa(function *() {
   yield router.route(this)
 })
 
-app.onerror = function (error) {
-  if (!error) return
-  if (error.stack) {
-    // clear thunks error stack info
-    error.stack = error.stack
-      .replace(/^\s*at.*thunks\.js.*$/gm, '')
-      .replace(/\n+/g, '\n')
-  }
-  ilog.error(error)
-}
+app.onerror = ilog.error
 
 app.keys = config.sessionSecret
 
