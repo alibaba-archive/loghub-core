@@ -4,6 +4,7 @@ const fs = require('fs')
 const path = require('path')
 const ilog = require('../service/log')
 const kafkaClient = require('../service/kafka')
+const rateLimit = require('../service/limit')
 const logGif = fs.readFileSync(path.join(process.cwd(), 'log.gif'))
 
 const logLevels = Object.create(null)
@@ -11,9 +12,10 @@ ilog.levels.map(function (level) {
   logLevels[level] = logLevels[level.toLowerCase()] = true
 })
 
-exports.get = function () {
+exports.get = function *() {
   // Authenticate session cookie or authorization token.
   let userId = authenticateUser(this)
+  yield rateLimit.get(userId)
 
   let log = checkLog(this, this.query.log)
   kafkaClient.saveLogs(genMessage(this, log, userId))
@@ -30,6 +32,8 @@ exports.get = function () {
 exports.post = function *() {
   // Authenticate session cookie or authorization token.
   let userId = authenticateUser(this)
+  yield rateLimit.post(userId)
+
   let log = yield this.parseBody()
   log = checkLog(this, log)
 
@@ -45,6 +49,7 @@ function authenticateUser (ctx) {
   if (!userId || !/^[a-f0-9]{24}$/.test(userId)) {
     ctx.throw(401, 'Either token or cookie is invalid.')
   }
+
   return userId
 }
 

@@ -26,11 +26,13 @@
     "kafka-node": "~0.2.29",
     "proxy-addr": "~1.0.8",
     "thunks": "~3.5.2",
+    "thunk-redis": "~0.11.0",
     "toa": "~1.0.1",
     "toa-body": "~1.2.2",
     "toa-cookie-session": "~0.1.0",
     "toa-favicon": "~1.1.0",
     "toa-pm": "~0.2.0",
+    "toa-ratelimit": "~1.1.0",
     "toa-router": "~1.1.2",
     "toa-token": "~1.2.0"
   },
@@ -42,7 +44,7 @@
   },
   "scripts": {
     "start": "NODE_ENV=development node app.js",
-    "test": "standard && mocha -t 5000 -r thunk-mocha"
+    "test": "standard && export NODE_ENV=test && mocha -t 5000 -r thunk-mocha"
   },
   "ignore": [
     "**/.*",

@@ -8,8 +8,9 @@ const toaBody = require('toa-body')
 const toaToken = require('toa-token')
 const favicon = require('toa-favicon')
 const cookieSession = require('toa-cookie-session')
-const router = require('./service/router')
+
 const ilog = require('./service/log')
+const router = require('./service/router')
 const packageInfo = require('./package.json')
 
 const app = Toa(function *() {
@@ -19,11 +20,15 @@ const app = Toa(function *() {
 
   this.state.ip = this.get('x-real-ip') || proxyaddr(this.req, 'uniquelocal')
   this.state.ua = this.get('user-agent')
-  // Handle requests for committing logs.
+
   yield router.route(this)
 })
 
-app.onerror = ilog.error
+app.onerror = function (error) {
+  // ignore 4xx error
+  if (error && error.status < 500) return
+  ilog.error(error)
+}
 
 app.keys = config.sessionSecret
 
