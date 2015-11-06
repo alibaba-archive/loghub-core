@@ -44,7 +44,7 @@
   },
   "scripts": {
     "start": "NODE_ENV=development node app.js",
-    "test": "standard && mocha -t 5000 -r thunk-mocha"
+    "test": "standard && export NODE_ENV=test && mocha -t 5000 -r thunk-mocha"
   },
   "ignore": [
     "**/.*",

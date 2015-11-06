@@ -2,24 +2,22 @@
 
 const config = require('config')
 const redis = require('thunk-redis')
-const tools = require('./tools')
+const ilog = require('./log')
 
-const client = redis.createClient(config.redisPort, config.redisHost)
+const client = redis.createClient(config.redisHosts, config.redisOptions)
 
 client
   .on('connect', function () {
-    tools.logInfo('thunk-redis', {
-      redisHost: config.redisHost,
-      redisPort: config.redisPort,
-      message: 'connected'
+    ilog.info({
+      name: 'redis',
+      host: config.redisHosts,
+      options: config.redisOptions
     })
   })
-  .on('error', tools.logErr)
-  .on('warn', function (err) {
-    tools.logInfo('thunk-redis', err)
-  })
-  .on('close', function (hadErr) {
-    if (hadErr) return tools.logErr(hadErr)
+  .on('error', function (error) {
+    ilog.emergency(error)
+    // the application should restart if error occured
+    throw error
   })
 
 exports.client = client

@@ -844,6 +844,28 @@
         }
       }
     },
+    "thunk-redis": {
+      "version": "0.11.0",
+      "from": "thunk-redis@>=0.11.0 <0.12.0",
+      "dependencies": {
+        "debug": {
+          "version": "2.2.0",
+          "from": "debug@>=2.2.0 <3.0.0",
+          "resolved": "https://registry.npmjs.org/debug/-/debug-2.2.0.tgz",
+          "dependencies": {
+            "ms": {
+              "version": "0.7.1",
+              "from": "ms@0.7.1",
+              "resolved": "https://registry.npmjs.org/ms/-/ms-0.7.1.tgz"
+            }
+          }
+        },
+        "respjs": {
+          "version": "2.0.3",
+          "from": "respjs@>=2.0.2 <3.0.0"
+        }
+      }
+    },
     "thunks": {
       "version": "3.5.2",
       "from": "thunks@>=3.5.2 <3.6.0"
@@ -1044,6 +1066,28 @@
     "toa-pm": {
       "version": "0.2.0",
       "from": "toa-pm@>=0.2.0 <0.3.0"
+    },
+    "toa-ratelimit": {
+      "version": "1.1.0",
+      "from": "toa-ratelimit@>=1.1.0 <1.2.0",
+      "dependencies": {
+        "debug": {
+          "version": "2.2.0",
+          "from": "debug@>=2.2.0 <3.0.0",
+          "resolved": "https://registry.npmjs.org/debug/-/debug-2.2.0.tgz",
+          "dependencies": {
+            "ms": {
+              "version": "0.7.1",
+              "from": "ms@0.7.1",
+              "resolved": "https://registry.npmjs.org/ms/-/ms-0.7.1.tgz"
+            }
+          }
+        },
+        "thunk-ratelimiter": {
+          "version": "1.1.1",
+          "from": "thunk-ratelimiter@>=1.1.0 <2.0.0"
+        }
+      }
     },
     "toa-router": {
       "version": "1.1.2",
