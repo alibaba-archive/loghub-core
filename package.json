@@ -2,7 +2,7 @@
   "name": "loghub-core",
   "description": "Collect logs from HTTP request and pipe them to Kafka.",
   "authors": [],
-  "version": "0.3.0",
+  "version": "0.4.0",
   "main": "app.js",
   "repository": {
     "type": "git",
