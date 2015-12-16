@@ -2,7 +2,7 @@
 
 const fs = require('fs')
 const path = require('path')
-const ilog = require('../service/log')
+const ilog = require('ilog')
 const kafkaClient = require('../service/kafka')
 const rateLimit = require('../service/limit')
 const logGif = fs.readFileSync(path.join(process.cwd(), 'log.gif'))

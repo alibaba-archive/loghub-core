@@ -2,7 +2,7 @@
 
 const config = require('config')
 const kafka = require('kafka-node')
-const ilog = require('./log')
+const ilog = require('ilog')
 const thunk = require('thunks')()
 
 const client = new kafka.Client(config.kafka.host, 'loghub-core')

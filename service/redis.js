@@ -2,7 +2,7 @@
 
 const config = require('config')
 const redis = require('thunk-redis')
-const ilog = require('./log')
+const ilog = require('ilog')
 
 const client = redis.createClient(config.redisHosts, config.redisOptions)
 

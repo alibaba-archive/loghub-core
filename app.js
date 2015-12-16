@@ -2,6 +2,7 @@
 
 const Toa = require('toa')
 const pm = require('toa-pm')
+const ilog = require('ilog')
 const config = require('config')
 const proxyaddr = require('proxy-addr')
 const toaBody = require('toa-body')
@@ -9,11 +10,12 @@ const toaToken = require('toa-token')
 const favicon = require('toa-favicon')
 const cookieSession = require('toa-cookie-session')
 
-const ilog = require('./service/log')
 const router = require('./service/router')
 const packageInfo = require('./package.json')
 
-const app = Toa(function *() {
+ilog.level = config.logLevel
+
+const app = module.exports = Toa(function *() {
   this.set('Access-Control-Allow-Origin', this.get('origin') || '*')
   this.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
   this.set('Access-Control-Allow-Headers', 'Authorization')
@@ -55,6 +57,5 @@ app.use(cookieSession({name: config.sessionName}))
 app.listen(config.port)
 // The server is finally closed and exit gracefully when all connections are ended.
 pm(app)
-module.exports = app
 
 ilog.info({name: packageInfo.name, version: packageInfo.version, port: config.port})

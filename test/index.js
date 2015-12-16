@@ -99,6 +99,8 @@ describe('Test token authorization', function () {
   it('POST /log, 200', function *() {
     var token = app.signToken(user)
 
+    if (app.config.env === 'development') return
+
     yield kafkaClient.kafkaReady
     yield request.post('/log')
       .set('Authorization', 'Bearer ' + token)
@@ -143,6 +145,7 @@ describe('Test token authorization', function () {
   })
 
   it('POST /log, 429', function *() {
+    if (app.config.env === 'development') return
     var token = app.signToken(user)
     var i = config.rateLimitMaxPost + 1
     var status = []

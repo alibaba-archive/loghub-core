@@ -2,7 +2,7 @@
   "name": "loghub-core",
   "description": "Collect logs from HTTP request and pipe them to Kafka.",
   "authors": [],
-  "version": "0.4.0",
+  "version": "0.5.0",
   "main": "app.js",
   "repository": {
     "type": "git",
@@ -21,30 +21,31 @@
   ],
   "dependencies": {
     "cfork": "^1.4.0",
-    "config": "~1.16.0",
-    "ilog": "~1.0.0",
+    "config": "~1.17.1",
+    "ilog": "~1.0.1",
     "kafka-node": "~0.2.29",
-    "proxy-addr": "~1.0.8",
-    "thunks": "~3.5.2",
-    "thunk-redis": "~0.11.0",
-    "toa": "~1.0.1",
+    "proxy-addr": "~1.0.10",
+    "thunks": "~4.1.0",
+    "thunk-redis": "~1.3.0",
+    "toa": "~1.2.0",
     "toa-body": "~1.2.2",
     "toa-cookie-session": "~0.1.0",
     "toa-favicon": "~1.1.0",
     "toa-pm": "~0.2.0",
-    "toa-ratelimit": "~1.1.0",
+    "toa-ratelimit": "~1.2.0",
     "toa-router": "~1.1.2",
-    "toa-token": "~1.2.0"
+    "toa-token": "~2.0.0"
   },
   "devDependencies": {
-    "mocha": "^2.3.3",
-    "standard": "^5.3.1",
+    "mocha": "^2.3.4",
+    "standard": "^5.4.1",
     "supertest": "^1.1.0",
-    "thunk-mocha": "^1.0.0"
+    "thunk-mocha": "^1.0.1"
   },
   "scripts": {
     "start": "NODE_ENV=development node app.js",
-    "test": "standard && export NODE_ENV=test && mocha -t 5000 -r thunk-mocha"
+    "test": "standard && mocha -t 5000 -r thunk-mocha",
+    "test-all": "standard && NODE_ENV=test && mocha -t 5000 -r thunk-mocha"
   },
   "ignore": [
     "**/.*",
