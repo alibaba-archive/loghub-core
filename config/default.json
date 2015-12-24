@@ -2,14 +2,19 @@
   "port": 3500,
   "redisHosts": "127.0.0.1:6379",
   "redisOptions": null,
-  "rateLimitMaxGet": 200,
-  "rateLimitMaxPost": 100,
-  "rateLimitPrefix": "LOGHUB_RL",
   "sessionName": "TEAMBITION_SESSIONID",
   "sessionSecret": ["sessionSecretXXX"],
   "tokenSecret": ["tokenSecretXXX"],
   "tokenExpires": 172800,
   "logLevel": 6,
+  "limiter": {
+    "prefix": "LHRT",
+    "duration": 60000,
+    "policy": {
+      "GET": [120, 60000, 60, 60000, 30, 120000],
+      "POST": [60, 60000, 20, 60000]
+    }
+  },
   "kafka": {
     "host": "localhost:2181",
     "topic": "test",

@@ -11,20 +11,12 @@ const favicon = require('toa-favicon')
 const cookieSession = require('toa-cookie-session')
 
 const router = require('./service/router')
+const limiter = require('./service/limiter')
 const packageInfo = require('./package.json')
 
 ilog.level = config.logLevel
 
-const app = module.exports = Toa(function *() {
-  this.set('Access-Control-Allow-Origin', this.get('origin') || '*')
-  this.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-  this.set('Access-Control-Allow-Headers', 'Authorization')
-
-  this.state.ip = this.get('x-real-ip') || proxyaddr(this.req, 'uniquelocal')
-  this.state.ua = this.get('user-agent')
-
-  yield router.route(this)
-})
+const app = module.exports = Toa()
 
 app.onerror = function (error) {
   // ignore 4xx error
@@ -50,12 +42,35 @@ toaBody(app, {
 
 app.use(favicon('favicon.ico'))
 app.use(cookieSession({name: config.sessionName}))
+app.use(function *() {
+  this.set('Access-Control-Allow-Origin', this.get('origin') || '*')
+  this.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+  this.set('Access-Control-Allow-Headers', 'Authorization')
+
+  let session = this.session
+  let userId = session.uid || (session.user && session.user._id)
+  if (!userId) {
+    try {
+      userId = this.token.userId
+    } catch (e) {}
+  }
+
+  this.state.userId = /^[a-f0-9]{24}$/.test(userId) ? userId : null
+  this.state.ip = this.get('x-real-ip') || proxyaddr(this.req, 'uniquelocal')
+  this.state.ua = this.get('user-agent')
+})
+app.use(limiter)
+app.use(router.toThunk())
 
 /**
  * Start up service.
  */
-app.listen(config.port)
+app.listen(config.port, () => {
+  ilog.info({
+    name: packageInfo.name,
+    version: packageInfo.version,
+    port: config.port
+  })
+})
 // The server is finally closed and exit gracefully when all connections are ended.
 pm(app)
-
-ilog.info({name: packageInfo.name, version: packageInfo.version, port: config.port})

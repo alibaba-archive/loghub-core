@@ -1,6 +1,7 @@
 'use strict'
 /* global describe, before, it, after */
 
+const crypto = require('crypto')
 const assert = require('assert')
 const fs = require('fs')
 const path = require('path')
@@ -8,13 +9,12 @@ const config = require('config')
 const thunk = require('thunks')()
 const supertest = require('supertest')
 const app = require('../app')
-const redis = require('../service/redis')
 const kafkaClient = require('../service/kafka')
 
 const fsStat = thunk.thunkify(fs.stat)
 const request = supertest(app.server)
-const user = {userId: '55c1cf622d81b84d4e1d5338'}
 const logContent = genLog({test: 'message', LOG_TYPE: 'info'})
+const user = genUser()
 
 describe('Test token authorization', function () {
   var logGifSize
@@ -25,7 +25,7 @@ describe('Test token authorization', function () {
   })
 
   after(function *() {
-    yield thunk.delay(4000)
+    yield thunk.delay(2000)
   })
 
   it('Hello', function *() {
@@ -127,29 +127,28 @@ describe('Test token authorization', function () {
   })
 
   it('GET /log, 429', function *() {
+    var user = genUser()
     var token = app.signToken(user)
-    var i = config.rateLimitMaxGet + 1
+    var i = config.limiter.policy.GET[0] + 1
     var url = `/log?log=${logContent}&token=${token}`
     var status = []
-    yield redis.client.del(`${config.rateLimitPrefix}:${user.userId}GET`)
     while (i--) {
       yield request.get(url)
         .expect(function (res) {
           status.push(res.status)
         })
     }
-    yield redis.client.del(`${config.rateLimitPrefix}:${user.userId}GET`)
-    // console.log(status)
+
     assert.strictEqual(status[status.length - 2], 200)
     assert.strictEqual(status[status.length - 1], 429)
   })
 
   it('POST /log, 429', function *() {
     if (app.config.env === 'development') return
+    var user = genUser()
     var token = app.signToken(user)
-    var i = config.rateLimitMaxPost + 1
+    var i = config.limiter.policy.POST[0] + 1
     var status = []
-    yield redis.client.del(`${config.rateLimitPrefix}:${user.userId}POST`)
     while (i--) {
       yield request.post('/log')
         .set('Authorization', 'Bearer ' + token)
@@ -158,12 +157,14 @@ describe('Test token authorization', function () {
           status.push(res.status)
         })
     }
-    yield redis.client.del(`${config.rateLimitPrefix}:${user.userId}POST`)
-    // console.log(status)
     assert.strictEqual(status[status.length - 2], 200)
     assert.strictEqual(status[status.length - 1], 429)
   })
 })
+
+function genUser () {
+  return {userId: crypto.createHash('md5').update(crypto.randomBytes(256)).digest('hex').slice(0, 24)}
+}
 
 function genLog (obj) {
   return encodeURIComponent(JSON.stringify(obj))
