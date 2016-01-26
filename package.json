@@ -1,7 +1,10 @@
 {
   "name": "loghub-core",
   "description": "Collect logs from HTTP request and pipe them to Kafka.",
-  "authors": [],
+  "authors": [
+    "Yan Qing <admin@zensh.com>",
+    "monkerek <monkerek@hotmail.com>"
+  ],
   "version": "0.6.0",
   "main": "app.js",
   "repository": {
@@ -11,6 +14,7 @@
   "engines": {
     "node": ">=4.0.0"
   },
+  "license": "MIT",
   "homepage": "https://github.com/teambition/loghub-core",
   "keywords": [
     "message",
@@ -47,10 +51,15 @@
     "test": "standard && mocha -t 5000 -r thunk-mocha",
     "test-all": "standard && NODE_ENV=test && mocha -t 5000 -r thunk-mocha"
   },
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "test",
-    "examples"
+  "files": [
+    "api",
+    "config",
+    "pm2",
+    "service",
+    "*.js",
+    "*.json",
+    "favicon.ico",
+    "log.gif",
+    "README.md"
   ]
 }
