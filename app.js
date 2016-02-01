@@ -10,8 +10,8 @@ const toaToken = require('toa-token')
 const favicon = require('toa-favicon')
 const cookieSession = require('toa-cookie-session')
 
-const router = require('./service/router')
-const limiter = require('./service/limiter')
+const router = require('./lib/service/router')
+const limiter = require('./lib/service/limiter')
 const packageInfo = require('./package.json')
 
 ilog.level = config.logLevel

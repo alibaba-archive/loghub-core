@@ -9,7 +9,7 @@ const config = require('config')
 const thunk = require('thunks')()
 const supertest = require('supertest')
 const app = require('../app')
-const kafkaClient = require('../service/kafka')
+const kafkaClient = require('../lib/service/kafka')
 
 const fsStat = thunk.thunkify(fs.stat)
 const request = supertest(app.server)
