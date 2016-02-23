@@ -39,7 +39,7 @@ describe('Test token authorization', function () {
   })
 
   it('POST /log without authorization', function *() {
-    yield request.post(`/log`)
+    yield request.post('/log')
       .send({test: 'message'})
       .expect(401)
   })
