@@ -5,7 +5,7 @@
     "Yan Qing <admin@zensh.com>",
     "monkerek <monkerek@hotmail.com>"
   ],
-  "version": "0.6.2",
+  "version": "0.6.3",
   "main": "app.js",
   "repository": {
     "type": "git",
