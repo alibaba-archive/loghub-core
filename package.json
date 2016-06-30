@@ -5,7 +5,7 @@
     "Yan Qing <admin@zensh.com>",
     "monkerek <monkerek@hotmail.com>"
   ],
-  "version": "0.6.7",
+  "version": "0.6.8",
   "main": "app.js",
   "repository": {
     "type": "git",
@@ -26,13 +26,13 @@
   "dependencies": {
     "config": "~1.21.0",
     "ilog": "~1.0.3",
-    "kafka-node": "~0.3.3",
+    "kafka-node": "~0.4.0",
     "proxy-addr": "~1.1.2",
     "thunk-redis": "~1.6.5",
     "thunks": "~4.2.2",
     "toa": "~1.5.1",
     "toa-body": "~1.3.1",
-    "toa-cookie-session": "~0.2.0",
+    "toa-cookie-session": "~0.2.3",
     "toa-favicon": "~1.2.1",
     "toa-pm": "~0.2.2",
     "toa-ratelimit": "~2.1.1",
