@@ -1,13 +1,14 @@
 'use strict'
 
-const crypto = require('crypto')
-const assert = require('assert')
 const fs = require('fs')
 const path = require('path')
 const tman = require('tman')
+const assert = require('assert')
 const config = require('config')
+const crypto = require('crypto')
 const thunk = require('thunks')()
 const supertest = require('supertest')
+
 const app = require('../app')
 const kafkaClient = require('../lib/service/kafka')
 
@@ -114,7 +115,7 @@ tman.suite('Test token authorization', function () {
     var token = app.signToken(user)
     yield request.get(`/log.gif?log=${logContent}&token=${token}`)
       .expect('Content-Type', /gif/)
-      .expect('Content-Length', logGifSize)
+      .expect('Content-Length', String(logGifSize))
       .expect(200)
   })
 
@@ -123,7 +124,7 @@ tman.suite('Test token authorization', function () {
     yield request.get(`/log.gif?log=${logContent}`)
       .set('Authorization', 'Bearer ' + token)
       .expect('Content-Type', /gif/)
-      .expect('Content-Length', logGifSize)
+      .expect('Content-Length', String(logGifSize))
       .expect(200)
   })
 
