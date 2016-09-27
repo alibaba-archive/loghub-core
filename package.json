@@ -5,8 +5,14 @@
     "Yan Qing <admin@zensh.com>",
     "monkerek <monkerek@hotmail.com>"
   ],
-  "version": "0.7.0",
+  "version": "0.7.1",
   "main": "app.js",
+  "scripts": {
+    "start": "NODE_ENV=development node app.js",
+    "test": "standard && tman",
+    "test-self": "node test_self",
+    "test-all": "standard && NODE_ENV=test tman"
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com:teambition/loghub-core.git"
@@ -29,25 +35,21 @@
     "kafka-node": "~0.5.8",
     "proxy-addr": "~1.1.2",
     "thunk-redis": "~1.7.1",
-    "thunks": "~4.7.1",
-    "toa": "~2.0.1",
-    "toa-body": "~1.4.0",
-    "toa-cookie-session": "~0.2.4",
-    "toa-favicon": "~1.2.2",
+    "thunks": "~4.7.5",
+    "toa": "~2.2.1",
+    "toa-body": "~1.4.1",
+    "toa-cookie-session": "~0.2.5",
+    "toa-favicon": "~1.2.3",
     "toa-pm": "~0.2.2",
-    "toa-ratelimit": "~2.1.1",
+    "toa-ratelimit": "~2.1.2",
     "toa-router": "~1.5.1",
-    "toa-token": "~2.1.0"
+    "toa-token": "~2.1.0",
+    "urllib": "^2.16.0"
   },
   "devDependencies": {
-    "standard": "^8.0.0",
+    "standard": "^8.2.0",
     "supertest": "^2.0.0",
-    "tman": "^1.4.5"
-  },
-  "scripts": {
-    "start": "NODE_ENV=development node app.js",
-    "test": "standard && tman",
-    "test-all": "standard && NODE_ENV=test tman"
+    "tman": "^1.6.0"
   },
   "files": [
     "config",

@@ -103,7 +103,7 @@ tman.suite('Test token authorization', function () {
 
     if (app.config.env === 'development') return
 
-    yield kafkaClient.kafkaReady
+    yield kafkaClient.isReady
     yield request.post('/log')
       .set('Authorization', 'Bearer ' + token)
       .send({test: 'message', LOG_TYPE: 'info'})
