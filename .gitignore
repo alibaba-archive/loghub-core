@@ -33,4 +33,3 @@ debug
 config/test.json
 config/development.json
 config/production.json
-Skyfile.js
