@@ -5,7 +5,7 @@
     "Yan Qing <admin@zensh.com>",
     "monkerek <monkerek@hotmail.com>"
   ],
-  "version": "0.7.1",
+  "version": "1.0.0",
   "main": "app.js",
   "scripts": {
     "start": "NODE_ENV=development node app.js",
@@ -18,7 +18,7 @@
     "url": "git@github.com:teambition/loghub-core.git"
   },
   "engines": {
-    "node": ">=4.0.0"
+    "node": ">= 6.0.0"
   },
   "license": "MIT",
   "homepage": "https://github.com/teambition/loghub-core",
@@ -30,26 +30,26 @@
     "teambition"
   ],
   "dependencies": {
-    "config": "~1.21.0",
+    "config": "~1.25.1",
     "ilog": "~1.0.3",
-    "kafka-node": "~0.5.8",
-    "proxy-addr": "~1.1.2",
-    "thunk-redis": "~1.7.1",
-    "thunks": "~4.7.5",
-    "toa": "~2.2.1",
-    "toa-body": "~1.4.1",
+    "kafka-node": "~1.6.0",
+    "proxy-addr": "~1.1.4",
+    "thunk-redis": "~2.0.0",
+    "thunks": "~4.7.6",
+    "toa": "~2.6.4",
+    "toa-body": "~2.0.1",
     "toa-cookie-session": "~0.2.5",
     "toa-favicon": "~1.2.3",
     "toa-pm": "~0.2.2",
-    "toa-ratelimit": "~2.1.2",
-    "toa-router": "~1.5.1",
-    "toa-token": "~2.1.0",
-    "urllib": "^2.16.0"
+    "toa-ratelimit": "~2.2.1",
+    "toa-router": "~2.0.1",
+    "toa-token": "~2.1.1",
+    "urllib": "^2.21.2"
   },
   "devDependencies": {
-    "standard": "^8.2.0",
-    "supertest": "^2.0.0",
-    "tman": "^1.6.0"
+    "standard": "^10.0.1",
+    "supertest": "^3.0.0",
+    "tman": "^1.6.6"
   },
   "files": [
     "config",
