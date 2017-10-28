@@ -5,7 +5,7 @@
     "Yan Qing <admin@zensh.com>",
     "monkerek <monkerek@hotmail.com>"
   ],
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "app.js",
   "scripts": {
     "start": "NODE_ENV=development node app.js",
@@ -30,26 +30,26 @@
     "teambition"
   ],
   "dependencies": {
-    "config": "~1.26.1",
-    "ilog": "~1.1.1",
-    "kafka-node": "~2.2.0",
-    "proxy-addr": "~1.1.5",
-    "thunk-redis": "~2.1.2",
-    "thunks": "~4.8.0",
-    "toa": "~3.0.1",
-    "toa-body": "~2.0.2",
+    "config": "~1.27.0",
+    "ilog": "~1.2.0",
+    "kafka-node": "~2.2.3",
+    "proxy-addr": "~2.0.2",
+    "thunk-redis": "~2.1.6",
+    "thunks": "~4.9.0",
+    "toa": "~3.0.8",
+    "toa-body": "~3.0.0",
     "toa-cookie-session": "~1.0.1",
     "toa-favicon": "~1.3.0",
     "toa-pm": "~1.0.0",
     "toa-ratelimit": "~2.2.1",
     "toa-router": "~2.1.3",
-    "toa-token": "~2.2.0",
-    "urllib": "^2.24.0"
+    "toa-token": "~2.3.0",
+    "urllib": "^2.25.1"
   },
   "devDependencies": {
     "standard": "^10.0.3",
     "supertest": "^3.0.0",
-    "tman": "^1.7.1"
+    "tman": "^1.7.3"
   },
   "files": [
     "config",
