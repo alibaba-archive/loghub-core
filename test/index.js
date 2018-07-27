@@ -111,6 +111,19 @@ tman.suite('Test token authorization', function () {
       .expect(200, {success: true})
   })
 
+  tman.it('POST /logs, 200', function * () {
+    var token = app.signToken(user)
+
+    if (app.config.env === 'development') return
+
+    yield kafkaClient.isReady
+    yield request.post('/logs')
+      .set('Authorization', 'Bearer ' + token)
+      .send([{test: 'message', LOG_TYPE: 'info'}])
+      .expect('Content-Type', /json/)
+      .expect(200, {success: true})
+  })
+
   tman.it('GET /log.gif, 200', function * () {
     var token = app.signToken(user)
     yield request.get(`/log.gif?log=${logContent}&token=${token}`)
